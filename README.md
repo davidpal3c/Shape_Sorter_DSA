@@ -11,7 +11,9 @@
 
 ## Overview
 
-The Shape Sorter Program is a powerful tool designed to sort an array of `Shape` objects using various sorting algorithms. This program allows users to specify different criteria for comparison, including height, volume, or base area. After executing a sorting operation, the program will output a sorted array along with an approximation of the time taken for the selected sorting algorithm to complete, measured in nanoseconds.
+The Shape Sorter Program is a powerful tool designed to sort an array of `Shape` objects and generics using various sorting algorithms. This program allows users to specify different criteria for comparison, including height, volume, or base area. This program exemplifies OOP concepts such as polymorphism, abstraction, encapsulation, inheritance and generic types and it is a revamped version from a class assignment. 
+
+After executing a sorting operation, the program will output a sorted array along with an approximation of the time taken for the selected sorting algorithm to complete, measured in nanoseconds.
 
 This program is executed through a Java Archive file (.jar) via the command line interface, located in the `/dist` directory of the program.
 
