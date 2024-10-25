@@ -1,10 +1,8 @@
 
-* Complexity and Sorting Program - CPRG304
-* Authors: David Palaces, Ngoc Tam Nguyen, 
-* Date: October 1, 2024
 
 
-# Shape Sorter Program - CPRG304
+# Shape Sorter Program 
+(Complexity Analysis)
 
 **Authors:** David Palaces, Ngoc Tam Nguyen  
 **Date:** October 1, 2024  
