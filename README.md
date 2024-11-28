@@ -1,10 +1,8 @@
 
-
-
 # Shape Sorter Program 
 (Complexity Analysis)
 
-**Authors:** David Palaces, Ngoc Tam Nguyen  
+**Authors:** David Palacios, Ngoc Tam Nguyen  
 **Date:** October 1, 2024  
 
 ---
