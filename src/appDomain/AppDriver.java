@@ -1,18 +1,18 @@
 /**
-*
-* Complexity and Sorting Program - CPRG304 - SAIT
-* Authors: Emily Thieu, Ngoc Tam Nguyen, Yaling Wei, David Palacios
-* Instructor: Hani Mohammed
-* Date: October 24, 2024
+ * Complexity and Sorting Program - CPRG304 - SAIT
+ * This program demonstrates the use of various sorting algorithms to sort Shape objects
+ * based on specific criteria such as height, volume, or base area.
+ *
+ * Authors: Emily Thieu, Ngoc Tam Nguyen, Yaling Wei, David Palacios
+ * Instructor: Hani Mohammed
+ * Date: October 24, 2024
  */
 
 package appDomain;
 
-//import java.io.File;
 import sorters.Sorter;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Scanner;
 import comparators.ShapeComparator;
 import comparators.BaseComparator;
 import comparators.VolumeComparator;
@@ -24,249 +24,134 @@ import sorters.SelectionSort;
 import sorters.MergeSort;
 import sorters.HeapSort;
 
+/**
+ * Main driver class for the application.
+ * Handles user input, invokes file reading, and performs sorting operations based on selected criteria.
+ */
+public class AppDriver {
 
-public class AppDriver
-{    
-    public static void main(String[] args)
-    {
-        String filename = "";
-        char compareBy = 'x'; 
-        char sortAlgorithm = 'y';
-
-        //test
-//        filename = "shapes1";
-//        compareBy = 'h';
-//        sortAlgorithm = 'm';                        
+    /**
+     * Entry point of the application.
+     * Parses command-line arguments, reads the shape data, and performs sorting operations.
+     *
+     * @param args Command-line arguments specifying file name, comparison criteria, and sorting algorithm.
+     */
+    public static void main(String[] args) {
+        String filename = ""; // File name containing the shapes data
+        char compareBy = 'x'; // Criteria for comparison: 'h' (height), 'v' (volume), 'a' (base area)
+        char sortAlgorithm = 'y'; // Sorting algorithm: 'b', 'i', 's', 'm', 'q', 'h'
 
         try {
-
-            for (int i = 0; i < args.length; i++) { 
-
+            // Parse command-line arguments
+            for (int i = 0; i < args.length; i++) {
                 String arg = args[i].toLowerCase();
 
-                if (arg.startsWith("-f")) {
-                    filename = arg.substring(2);                         
+                if (arg.startsWith("-f")) { // File name argument
+                    filename = arg.substring(2);
                     System.out.println("Filename: " + filename);
 
-                    if(filename.isEmpty())
-                        System.err.println("Missing filename after '-f'. Please enter file name. ");
-
-                } else if (arg.startsWith("-t")) {
-
-                    if(arg.length() > 2)
-                        compareBy = arg.charAt(2);                         
-                    else
-                        System.err.println("Missing 'compare by' command after 't'");
-
-                } else if (arg.startsWith("-s")) {
-
-                    if(arg.length() > 2)
-                        sortAlgorithm = arg.charAt(2);                             
-                    else
-                        System.err.println("Missing sort algorithm criteria 's'");
-
+                    if (filename.isEmpty()) {
+                        System.err.println("Missing filename after '-f'. Please enter a file name.");
+                    }
+                } else if (arg.startsWith("-t")) { // Comparison criteria argument
+                    if (arg.length() > 2) {
+                        compareBy = arg.charAt(2);
+                    } else {
+                        System.err.println("Missing 'compare by' command after '-t'.");
+                    }
+                } else if (arg.startsWith("-s")) { // Sorting algorithm argument
+                    if (arg.length() > 2) {
+                        sortAlgorithm = arg.charAt(2);
+                    } else {
+                        System.err.println("Missing sort algorithm after '-s'.");
+                    }
                 } else {
-                    System.err.println("Unknown command " + args[i]);
+                    System.err.println("Unknown command: " + args[i]);
                 }
-            }    
-            filename = filename.trim();
-
-            // populate list with shape objects
-            Shape[] objectList = FileIO.ReadFile(filename);
-
-//                for (Shape obj : objectList) {
-//                    System.out.println(obj.toString());
-//                }       
-
-            long startTime = System.nanoTime();
-
-            ShapeComparator comparator = null;
-            if (compareBy == 'v') {
-                comparator = new VolumeComparator();  
-            } else if (compareBy == 'a') {
-                comparator=new BaseComparator();
             }
 
+            filename = filename.trim();
 
-            // Invoking respective sort/compare methods                
-            switch(sortAlgorithm){
+            // Populate an array with Shape objects from the specified file
+            Shape[] objectList = FileIO.ReadFile(filename);
 
-                case 'b':     
-                    System.out.print("Bubble Sort \n"); 
-                    if(compareBy == 'h') {
-                        System.out.print("Compare by height \n");
-                        BubbleS<Shape> bubleSort = new BubbleS(objectList);                            
-                        bubleSort.heightDesc();
-                        UIservice.displayResultHeight(objectList);
+            // Start measuring time for the sorting operation
+            long startTime = System.nanoTime();
 
-                    }                                             
-                    else if(compareBy == 'v') {
-                        System.out.print("Comparing by volume \n"); 
-                        BubbleS<Shape> bubleSort = new BubbleS<>(objectList, comparator);                            
-                        bubleSort.volumeDesc();
-                        UIservice.displayResultVol(objectList);
-                    }
-                    else if(compareBy == 'a') {
-                        System.out.print("Comparing by base area \n");
-                        BubbleS<Shape> bubleSort = new BubbleS(objectList, comparator); 
-                        bubleSort.volumeDesc();
-                        UIservice.displayResultBaseArea(objectList);
-                    }   
+            // Initialize the appropriate comparator based on the criteria
+            ShapeComparator comparator = null;
+            if (compareBy == 'v') {
+                comparator = new VolumeComparator();
+            } else if (compareBy == 'a') {
+                comparator = new BaseComparator();
+            }
+
+            // Perform sorting based on the selected algorithm and criteria
+            switch (sortAlgorithm) {
+                case 'b': // Bubble Sort
+                    System.out.println("Bubble Sort");
+                    performSort(new BubbleS<>(objectList, comparator), compareBy, objectList);
                     break;
 
-                case 'i':      
-                    System.out.print("Insertion Sort \n");
-                    if(compareBy == 'h') {
-                        System.out.print("Compare by height \n");
-                        InsertionSort<Shape> insertionSort = new InsertionSort(objectList);                            
-                        insertionSort.heightDesc();
-                        UIservice.displayResultHeight(objectList);
-
-                    }                                             
-                    else if(compareBy == 'v') {
-                        System.out.print("Comparing by volume \n"); 
-                        InsertionSort<Shape> insertionSort = new InsertionSort<>(objectList, comparator);                            
-                        insertionSort.volumeDesc();
-                        UIservice.displayResultVol(objectList);
-                    }
-                    else if(compareBy == 'a') {
-                        System.out.print("Comparing by base area \n");
-                        InsertionSort<Shape> insertionSort = new InsertionSort<>(objectList, comparator);  
-                        insertionSort.baseAreaDesc();
-                        UIservice.displayResultBaseArea(objectList);
-                    }   
+                case 'i': // Insertion Sort
+                    System.out.println("Insertion Sort");
+                    performSort(new InsertionSort<>(objectList, comparator), compareBy, objectList);
                     break;
 
-                case 's':      
-                    System.out.print("Selection sort \n");
-
-                    // method call (specifying compareBy h/v/b
-
-                    if(compareBy == 'h') {
-                        System.out.print("Compare by height \n");
-                        SelectionSort<Shape> selectionSort = new SelectionSort(objectList);                            
-                        selectionSort.heightDesc();
-                        UIservice.displayResultHeight(objectList);
-
-                    }                                             
-                    else if(compareBy == 'v') {
-                        System.out.print("Comparing by volume \n");
-                        
-                        SelectionSort<Shape> selectionSort = new SelectionSort<>(objectList, comparator);                            
-                        selectionSort.volumeDesc();
-                        UIservice.displayResultVol(objectList);
-
-                    }
-                    else if(compareBy == 'a') {
-                        System.out.print("Comparing by base area \n");
-
-                        SelectionSort<Shape> selectionSort = new SelectionSort(objectList, comparator); 
-                        selectionSort.volumeDesc();
-                        UIservice.displayResultBaseArea(objectList);
-                    }     
-
+                case 's': // Selection Sort
+                    System.out.println("Selection Sort");
+                    performSort(new SelectionSort<>(objectList, comparator), compareBy, objectList);
                     break;
 
-                case 'm':      
-                    System.out.print("Merge sort \n");
-                    
-                    if(compareBy == 'h') {
-                        System.out.print("Compare by height \n");
-                        MergeSort<Shape> mergeSort = new MergeSort(objectList, comparator);                            
-                        mergeSort.heightDesc(objectList);
-                        UIservice.displayResultHeight(objectList);
-
-                    }                                             
-                    else if(compareBy == 'v') {
-                        System.out.print("Comparing by volume \n");
-                        MergeSort<Shape> mergeSort = new MergeSort(objectList, comparator);                            
-                        mergeSort.sortByVolOrBaseDesc(objectList);
-                        UIservice.displayResultVol(objectList);
-
-                    }
-                    else if(compareBy == 'a') {
-                        System.out.print("Comparing by volume \n");
-                        MergeSort<Shape> mergeSort = new MergeSort(objectList, comparator);                            
-                        mergeSort.sortByVolOrBaseDesc(objectList);
-                        UIservice.displayResultBaseArea(objectList);
-                    }
-                    
+                case 'm': // Merge Sort
+                    System.out.println("Merge Sort");
+                    performSort(new MergeSort<>(objectList, comparator), compareBy, objectList);
                     break;
 
-                case 'q':       
-                    System.out.print("Quick sort");
-                    if(compareBy == 'h') {
-                        System.out.print("Compare by height: \n");
-                        //Sorter<Shape> quickSort = new QuickSort(objectList); 
-                        QuickSort<Shape> quickSort=new QuickSort(objectList);
-                        quickSort.QuickSortDescByHeight(0, objectList.length - 1);
-                        UIservice.displayResultHeight(objectList);
-
-                    }
-                    else if(compareBy == 'v') {
-                        System.out.print("Comparing by: volume: \n");                         
-                        QuickSort<Shape> quickSort=new QuickSort(objectList, comparator);                            
-                        quickSort.QuickSortDescByVolumeAndBase(0, objectList.length - 1);
-                        UIservice.displayResultVol(objectList);
-
-                    }
-                    else if(compareBy == 'a') {
-                        System.out.print("Comparing by base area: \n");                         
-                        QuickSort<Shape> quickSort=new QuickSort(objectList, comparator);                            
-                        quickSort.QuickSortDescByVolumeAndBase(0, objectList.length - 1);
-                        UIservice.displayResultBaseArea(objectList);
-                   
-                    }  
+                case 'q': // Quick Sort
+                    System.out.println("Quick Sort");
+                    performSort(new QuickSort<>(objectList, comparator), compareBy, objectList);
                     break;
 
-                case 'h':      
-                    System.out.print("Heap Sort \n");
-                    if(compareBy == 'h') {
-                        System.out.print("Compare by height: \n");
-                        HeapSort<Shape> heapSort=new HeapSort(objectList);
-                        
-                        UIservice.displayResultHeight(objectList);
-
-                    }
-                    else if(compareBy == 'v') {
-                        System.out.print("Comparing by: volume: \n");                         
-                        HeapSort<Shape> heapSort=new HeapSort(objectList, comparator);                         
-                        heapSort.sortByVolumeOrBaseArea();
-                        UIservice.displayResultVol(objectList);
-
-                    }
-                    else if(compareBy == 'a') {
-                        System.out.print("Comparing by base area: \n");                         
-                        HeapSort<Shape> heapSort=new HeapSort(objectList, comparator);                              
-                        heapSort.sortByVolumeOrBaseArea();
-                        UIservice.displayResultBaseArea(objectList);
-                   
-                    }  
+                case 'h': // Heap Sort
+                    System.out.println("Heap Sort");
+                    performSort(new HeapSort<>(objectList, comparator), compareBy, objectList);
                     break;
 
                 default:
-                    System.out.print("unknown error");
-
+                    System.out.println("Unknown sort algorithm.");
             }
 
-
-            // print result: sorted list
-//                for (Shape obj : objectList) {
-//                    System.out.println(obj.toString());
-//                }  
-//                
-
-
+            // End measuring time and display the sorting duration
             long endTime = System.nanoTime();
-
             long totalTime = endTime - startTime;
             System.out.println("Sort time: " + totalTime + " ns");
 
-
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
-
     }
 
+    /**
+     * Performs the sorting operation and displays the sorted results.
+     *
+     * @param sorter     The sorter object to perform sorting.
+     * @param compareBy  The criteria for comparison ('h', 'v', 'a').
+     * @param objectList The array of Shape objects to sort.
+     */
+    private static void performSort(Sorter<Shape> sorter, char compareBy, Shape[] objectList) {
+        if (compareBy == 'h') { // Sort by height
+            System.out.println("Compare by height");
+            sorter.sortByHeightDesc();
+            UIservice.displayResultHeight(objectList);
+        } else if (compareBy == 'v') { // Sort by volume
+            System.out.println("Compare by volume");
+            sorter.sortByVolumeDesc();
+            UIservice.displayResultVol(objectList);
+        } else if (compareBy == 'a') { // Sort by base area
+            System.out.println("Compare by base area");
+            sorter.sortByBaseAreaDesc();
+            UIservice.displayResultBaseArea(objectList);
+        }
+    }
 }
